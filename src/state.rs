@@ -5,8 +5,16 @@ use std::collections::HashMap;
 
 const NUMBER_BOMBS: usize = 50;
 
+#[derive(Debug, Eq, PartialEq)]
+pub enum Outcome {
+  InProgress,
+  Win,
+  Lose
+}
+
 #[derive(Debug)]
 pub struct GameState {
+  pub outcome: Outcome,
   pub height: usize,
   pub width: usize,
   bombs: HashSet<(usize,usize)>,
@@ -47,6 +55,7 @@ fn neighbors(
 impl GameState {
   pub fn new(height: usize, width: usize) -> Self {
     Self {
+      outcome: Outcome::InProgress,
       height,
       width,
       bombs: choose_bomb_locations(height, width),
@@ -56,10 +65,19 @@ impl GameState {
     }
   }
 
-  pub fn click(&mut self, loc: (usize, usize)) -> bool {
+  pub fn reset(&mut self) {
+      self.outcome = Outcome::InProgress;
+      self.bombs = choose_bomb_locations(self.height, self.width);
+      self.visible_bomb = None;
+      self.revealed_squares = HashSet::new();
+      self.neighboring_bombs = HashMap::new();
+  }
+
+  pub fn click(&mut self, loc: (usize, usize)) {
     if self.bombs.contains(&loc) {
       self.visible_bomb = Some(loc);
-      return false;
+      self.outcome = Outcome::Lose;
+      return;
     }
 
     let mut todo = Vec::new();
@@ -92,7 +110,10 @@ impl GameState {
       }
     }
 
-    true
+    // check for win condition`
+    if self.revealed_squares.len() == self.height * self.width - NUMBER_BOMBS {
+      self.outcome = Outcome::Win;
+    }
   }
 }
 
