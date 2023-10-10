@@ -43,7 +43,7 @@ fn get_context(
 }
 
 #[wasm_bindgen(start)]
-pub fn main_js() -> Result<(), JsValue> {
+pub fn run() -> Result<(), JsValue> {
     console_error_panic_hook::set_once();
     web_sys::console::log_1(&JsValue::from_str("minesweeper!"));
 
