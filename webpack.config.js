@@ -11,7 +11,13 @@ module.exports = {
     path: dist,
     filename: "[name].js"
   },
-  devServer: { contentBase: dist },
+  devServer: {
+    watchFiles: {
+      options: {
+         ignore: path.resolve(__dirname, "**/*.swp$"),
+       }
+    }
+  },
   experiments: { asyncWebAssembly: true },
   plugins: [
     new CopyPlugin({

@@ -20,6 +20,7 @@ pub struct GameState {
   bombs: HashSet<(usize,usize)>,
   pub visible_bomb: Option<(usize,usize)>, // when the user clicks a bomb, we'll draw it
   pub revealed_squares: HashSet<(usize,usize)>,
+  pub marked_squares: HashSet<(usize,usize)>,
   pub neighboring_bombs: HashMap<(usize,usize),u32>,
 }
 
@@ -61,6 +62,7 @@ impl GameState {
       bombs: choose_bomb_locations(height, width),
       visible_bomb: None,
       revealed_squares: HashSet::new(),
+      marked_squares: HashSet::new(),
       neighboring_bombs: HashMap::new(),
     }
   }
@@ -70,10 +72,11 @@ impl GameState {
       self.bombs = choose_bomb_locations(self.height, self.width);
       self.visible_bomb = None;
       self.revealed_squares = HashSet::new();
+      self.marked_squares = HashSet::new();
       self.neighboring_bombs = HashMap::new();
   }
 
-  pub fn click(&mut self, loc: (usize, usize)) {
+  pub fn left_click(&mut self, loc: (usize, usize)) {
     if self.bombs.contains(&loc) {
       self.visible_bomb = Some(loc);
       self.outcome = Outcome::Lose;
@@ -114,6 +117,10 @@ impl GameState {
     if self.revealed_squares.len() == self.height * self.width - NUMBER_BOMBS {
       self.outcome = Outcome::Win;
     }
+  }
+
+  pub fn right_click(&mut self, loc: (usize, usize)) {
+    self.marked_squares.insert(loc);
   }
 }
 

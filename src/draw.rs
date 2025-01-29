@@ -87,13 +87,21 @@ pub fn draw_game(context: &web_sys::CanvasRenderingContext2d, game_state: &GameS
     }
   }
 
+  for (x, y) in &game_state.marked_squares {
+    let x0 = *x as f64 * SQUARE_SIZE + 6.0;
+    let y0 = *y as f64 * SQUARE_SIZE + 24.0;
+    context.set_font("20pt sans-serif");
+    context.set_fill_style(&JsValue::from_str("blue"));
+    context.fill_text("O", x0, y0).unwrap();
+  }
+
   // draw an X if the user clicked on a bomb square
   if game_state.visible_bomb.is_some() {
     let (x, y) = game_state.visible_bomb.unwrap();
     let x0 = x as f64 * SQUARE_SIZE + 6.0;
     let y0 = y as f64 * SQUARE_SIZE + 24.0;
     context.set_font("20pt sans-serif");
-    context.set_fill_style(&JsValue::from_str("black"));
+    context.set_fill_style(&JsValue::from_str("red"));
     context.fill_text("X", x0, y0).unwrap();
   }
 
