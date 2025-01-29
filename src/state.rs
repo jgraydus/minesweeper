@@ -120,7 +120,11 @@ impl GameState {
   }
 
   pub fn right_click(&mut self, loc: (usize, usize)) {
-    self.marked_squares.insert(loc);
+    if self.marked_squares.contains(&loc) {
+      self.marked_squares.remove(&loc);
+    } else {
+      self.marked_squares.insert(loc);
+    }
   }
 }
 
